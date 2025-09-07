@@ -3,8 +3,8 @@ import sys
 
 from PyQt6.QtCore import pyqtSignal, QRegularExpression, Qt
 from PyQt6.QtGui import QDoubleValidator, QIcon, QRegularExpressionValidator
-from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout
-from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox
+from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout, QButtonGroup
+from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, RadioButton
 
 # 引入文件夹路径
 relative_path = '..\\'
@@ -19,6 +19,7 @@ class MainLayout(QWidget):
 
     import_file_signal = pyqtSignal()
     extract_name_signal = pyqtSignal()
+    rename_signal = pyqtSignal(bool)
 
     def __init__(self):
         super().__init__()
@@ -76,7 +77,7 @@ class MainLayout(QWidget):
 
         rename_file_ctrl_layout = QHBoxLayout()
         rename_file_ctrl_layout.setContentsMargins(0, 0, 0, 0)
-        rename_file_ctrl_layout.setSpacing(0)
+        rename_file_ctrl_layout.setSpacing(5)
         # 左对齐
         rename_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         rename_file_layout.addLayout(rename_file_ctrl_layout)
@@ -84,6 +85,19 @@ class MainLayout(QWidget):
         rename_btn = PushButton(text='重命名')
         rename_btn.setFixedSize(100, 30)
         rename_file_ctrl_layout.addWidget(rename_btn)
+        rename_btn.clicked.connect(self.emit_rename_signal)
+
+        rename_rd_btn1 = RadioButton('直接重命名')
+        rename_rd_btn2 = RadioButton('另存后重命名')
+        # 将单选按钮添加到互斥的按钮组
+        self.button_group = QButtonGroup()
+        self.button_group.addButton(rename_rd_btn1)
+        self.button_group.addButton(rename_rd_btn2)
+        rename_rd_btn1.setChecked(True)
+        rename_rd_btn_layout = QHBoxLayout()
+        rename_rd_btn_layout.addWidget(rename_rd_btn1)
+        rename_rd_btn_layout.addWidget(rename_rd_btn2)
+        rename_file_ctrl_layout.addLayout(rename_rd_btn_layout)
 
         self.rename_file_table = TableWidget()
         rename_file_layout.addWidget(self.rename_file_table)
@@ -105,4 +119,6 @@ class MainLayout(QWidget):
     def emit_extract_name_signal(self):
         self.extract_name_signal.emit()
 
-        
+    def emit_rename_signal(self):
+        is_save_as = (self.button_group.checkedButton().text() == '另存后重命名')
+        self.rename_signal.emit(is_save_as)
