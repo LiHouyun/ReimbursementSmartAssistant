@@ -17,6 +17,7 @@ from utils.custom_style import EXPORT_BUTTON_STYLE
 class MainLayout(QWidget):
 
     import_file_signal = pyqtSignal()
+    extract_name_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -57,6 +58,11 @@ class MainLayout(QWidget):
         import_file_ctrl_layout.addWidget(import_file_btn)
         import_file_btn.clicked.connect(self.emit_import_file_signal)
 
+        extract_name_btn = PushButton(text='提取文件名')
+        extract_name_btn.setFixedSize(100, 30)
+        import_file_ctrl_layout.addWidget(extract_name_btn)
+        extract_name_btn.clicked.connect(self.emit_extract_name_signal)
+
         self.import_file_table = TableWidget()
         origin_file_layout.addWidget(self.import_file_table)
 
@@ -67,12 +73,18 @@ class MainLayout(QWidget):
         rename_file_layout.setSpacing(0)
         self.rename_layout.addLayout(rename_file_layout)
 
+        rename_file_ctrl_layout = QHBoxLayout()
+        rename_file_ctrl_layout.setContentsMargins(0, 0, 0, 0)
+        rename_file_ctrl_layout.setSpacing(0)
+        # 左对齐
+        rename_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        rename_file_layout.addLayout(rename_file_ctrl_layout)
+
         rename_btn = PushButton(text='重命名')
         rename_btn.setFixedSize(100, 30)
-        rename_file_layout.addWidget(rename_btn)
+        rename_file_ctrl_layout.addWidget(rename_btn)
 
         self.rename_file_table = TableWidget()
-        self.rename_file_table.setFixedSize(100, 30)
         rename_file_layout.addWidget(self.rename_file_table)
 
     def set_export_layout(self):
@@ -88,5 +100,8 @@ class MainLayout(QWidget):
 
     def emit_import_file_signal(self):
         self.import_file_signal.emit()
+
+    def emit_extract_name_signal(self):
+        self.extract_name_signal.emit()
 
         

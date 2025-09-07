@@ -14,6 +14,7 @@ sys.path.append(utils_folder_path)
 
 from layout.main_layout import MainLayout
 from config import cfg
+from utils.pdf import extract_invoice_info
 
 class MainInterface(QMainWindow):
     def __init__(self):
@@ -23,31 +24,48 @@ class MainInterface(QMainWindow):
         self.setWindowTitle(cfg.UI['WINDOWS_NAME'])
         self.setWindowIcon(QIcon('./resource/icon/1.svg'))
 
+        self.file_path_list = []
+
         self.main_layout.import_file_signal.connect(self.import_file)
+        self.main_layout.extract_name_signal.connect(self.extract_name)
 
     def import_file(self):
         # 打开系统文件资源管理器
-        file_path, _ = QFileDialog.getOpenFileNames(
+        self.file_path_list, _ = QFileDialog.getOpenFileNames(
             self,
             "选择文件",
             "",
-            "所有文件 (*.*);;文本文件 (*.txt);;图像文件 (*.png *.jpg)"
+            "PDF 文件 (*.pdf)"
         )
-        if file_path:
+
+        if self.file_path_list:
             self.main_layout.import_file_table.setRowCount(0)
-            self.main_layout.import_file_table.setRowCount(len(file_path))
-            for row, file_name in enumerate(file_path):
-                self.set_table_row(row, file_name.split('/')[-1])
+            self.main_layout.import_file_table.setRowCount(len(self.file_path_list))
+            for row, file_name in enumerate(self.file_path_list):
+                self.set_table_row(self.main_layout.import_file_table, row, file_name.split('/')[-1])
     
-    def set_table_row(self, row, file_name):
+    def set_table_row(self, table, row, value):
         """填充单元格"""
         table_header_labels_zh = ['文件名']
 
-        self.main_layout.import_file_table.setHorizontalHeaderLabels(table_header_labels_zh)
-        self.main_layout.import_file_table.setColumnCount(len(table_header_labels_zh))
+        table.setHorizontalHeaderLabels(table_header_labels_zh)
+        table.setColumnCount(len(table_header_labels_zh))
         
-        self.main_layout.import_file_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents) # 根据内容自动调整列宽
-        self.main_layout.import_file_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 第二列自动拉伸
+        table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents) # 根据内容自动调整列宽
+        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 第二列自动拉伸
         
-        item = QTableWidgetItem(str(file_name))
-        self.main_layout.import_file_table.setItem(row, 0, item)   # 把 Item 填充进单元格
+        item = QTableWidgetItem(str(value))
+        table.setItem(row, 0, item)   # 把 Item 填充进单元格
+
+    def extract_name(self):
+        print('[main_interface] extract name')
+        new_name_list = []
+        for file_path in self.file_path_list:
+            print(file_path)
+            info_all = extract_invoice_info(file_path)
+            new_name_list.append(info_all['价税合计']['小写'] + ' ' + info_all['开票日期'].replace('-', '')[4:8] + '.pdf')
+
+        self.main_layout.rename_file_table.setRowCount(0)
+        self.main_layout.rename_file_table.setRowCount(len(new_name_list))
+        for row, new_name in enumerate(new_name_list):
+            self.set_table_row(self.main_layout.rename_file_table, row, new_name)
