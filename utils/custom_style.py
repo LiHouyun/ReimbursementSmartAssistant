@@ -63,3 +63,24 @@ QPushButton:pressed {
     background-color: #45a080;
 }
 """
+
+# 预览按钮样式 - 无边框，文字有下划线
+PREVIEW_BUTTON_STYLE = """
+QPushButton {
+    border: none;
+    background-color: transparent;
+    color: #007acc;
+    text-decoration: underline;
+    font-size: 14px;
+    padding: 5px;
+}
+QPushButton:hover {
+    color: #005a9a;
+    background-color: rgba(0, 122, 204, 0.1);
+    border-radius: 3px;
+}
+QPushButton:pressed {
+    color: #003d66;
+    background-color: rgba(0, 122, 204, 0.2);
+}
+"""

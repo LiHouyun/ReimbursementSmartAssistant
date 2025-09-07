@@ -1,7 +1,7 @@
 import os
 import sys
 
-from PyQt6.QtGui import QDoubleValidator, QIcon
+from PyQt6.QtGui import QDoubleValidator, QIcon, QFont
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QFileDialog, QLabel
 from qfluentwidgets import InfoBarPosition, InfoBarIcon, PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox
@@ -68,9 +68,12 @@ class MainInterface(QMainWindow):
             # 设置列宽
             table.setColumnWidth(0, 100)  # 类别列
             table.setColumnWidth(2, 80)   # 预览按钮列
-
+            
+            font = QFont()
+            font.setPointSize(10)      # 也可以用 .setPixelSize(18)
             class_comboBox = ComboBox()
             class_comboBox.addItems(CLASS_LIST)
+            class_comboBox.setFont(font)
             table.setCellWidget(row, 0, class_comboBox)
         
             item = QTableWidgetItem(str(value2))
