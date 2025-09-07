@@ -12,6 +12,7 @@ current_file_path = os.path.dirname(__file__)
 utils_folder_path = os.path.abspath(os.path.join(current_file_path, relative_path))
 sys.path.append(utils_folder_path)
 
+from config.cfg import CLASS_LIST
 from utils.custom_style import EXPORT_BUTTON_STYLE
 
 class MainLayout(QWidget):
@@ -23,7 +24,7 @@ class MainLayout(QWidget):
         super().__init__()
         
         self.main_layout = QVBoxLayout()
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setContentsMargins(5, 5, 5, 5)
         self.main_layout.setSpacing(0)
         self.setLayout(self.main_layout)
 
@@ -43,12 +44,12 @@ class MainLayout(QWidget):
         origin_file_layout = QVBoxLayout()
         origin_file_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         origin_file_layout.setContentsMargins(0, 0, 0, 0)
-        origin_file_layout.setSpacing(0)
+        origin_file_layout.setSpacing(10)
         self.rename_layout.addLayout(origin_file_layout)
 
         import_file_ctrl_layout = QHBoxLayout()
         import_file_ctrl_layout.setContentsMargins(0, 0, 0, 0)
-        import_file_ctrl_layout.setSpacing(0)
+        import_file_ctrl_layout.setSpacing(5)
         # 左对齐
         import_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         origin_file_layout.addLayout(import_file_ctrl_layout)
@@ -57,7 +58,7 @@ class MainLayout(QWidget):
         import_file_btn.setFixedSize(100, 30)
         import_file_ctrl_layout.addWidget(import_file_btn)
         import_file_btn.clicked.connect(self.emit_import_file_signal)
-
+        
         extract_name_btn = PushButton(text='提取文件名')
         extract_name_btn.setFixedSize(100, 30)
         import_file_ctrl_layout.addWidget(extract_name_btn)
@@ -70,7 +71,7 @@ class MainLayout(QWidget):
         rename_file_layout = QVBoxLayout()
         rename_file_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         rename_file_layout.setContentsMargins(0, 0, 0, 0)
-        rename_file_layout.setSpacing(0)
+        rename_file_layout.setSpacing(10)
         self.rename_layout.addLayout(rename_file_layout)
 
         rename_file_ctrl_layout = QHBoxLayout()

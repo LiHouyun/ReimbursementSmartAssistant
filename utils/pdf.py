@@ -88,6 +88,7 @@ def extract_invoice_date(text: str) -> Optional[str]:
     patterns = [
         r"开票日期[:：]\s*(\d{4}年\d{1,2}月\d{1,2}日)",
         r"开票日期[:：]\s*(\d{4}-\d{1,2}-\d{1,2})",
+        r"国家税务总局 \s*(\d{4}年\d{1,2}月\d{1,2}日)",
         r"日期[:：]\s*(\d{4}年\d{1,2}月\d{1,2}日)"
     ]
     for pattern in patterns:
