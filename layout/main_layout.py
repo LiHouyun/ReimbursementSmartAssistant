@@ -30,48 +30,61 @@ class MainLayout(QWidget):
         self.set_export_layout()
 
     def set_rename_layout(self):
-        rename_layout = QHBoxLayout()
-        rename_layout.setContentsMargins(0, 0, 0, 0)
-        rename_layout.setSpacing(0)
-        self.main_layout.addLayout(rename_layout)
+        self.rename_layout = QHBoxLayout()
+        self.rename_layout.setContentsMargins(0, 0, 0, 0)
+        self.rename_layout.setSpacing(0)
+        self.main_layout.addLayout(self.rename_layout)
 
+        self.set_origin_file_layout()
+        self.set_rename_file_layout()
+
+    def set_origin_file_layout(self):
         origin_file_layout = QVBoxLayout()
         origin_file_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         origin_file_layout.setContentsMargins(0, 0, 0, 0)
         origin_file_layout.setSpacing(0)
-        rename_layout.addLayout(origin_file_layout)
+        self.rename_layout.addLayout(origin_file_layout)
+
+        import_file_ctrl_layout = QHBoxLayout()
+        import_file_ctrl_layout.setContentsMargins(0, 0, 0, 0)
+        import_file_ctrl_layout.setSpacing(0)
+        # 左对齐
+        import_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        origin_file_layout.addLayout(import_file_ctrl_layout)
 
         import_file_btn = PushButton(text='导入文件')
         import_file_btn.setFixedSize(100, 30)
-        origin_file_layout.addWidget(import_file_btn)
+        import_file_ctrl_layout.addWidget(import_file_btn)
         import_file_btn.clicked.connect(self.emit_import_file_signal)
 
-        import_file_table = TableWidget()
-        import_file_table.setFixedSize(100, 30)
-        origin_file_layout.addWidget(import_file_table)
+        self.import_file_table = TableWidget()
+        origin_file_layout.addWidget(self.import_file_table)
 
+    def set_rename_file_layout(self):
         rename_file_layout = QVBoxLayout()
         rename_file_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         rename_file_layout.setContentsMargins(0, 0, 0, 0)
         rename_file_layout.setSpacing(0)
-        rename_layout.addLayout(rename_file_layout)
+        self.rename_layout.addLayout(rename_file_layout)
 
         rename_btn = PushButton(text='重命名')
         rename_btn.setFixedSize(100, 30)
         rename_file_layout.addWidget(rename_btn)
 
-        rename_file_table = TableWidget()
-        rename_file_table.setFixedSize(100, 30)
-        rename_file_layout.addWidget(rename_file_table)
+        self.rename_file_table = TableWidget()
+        self.rename_file_table.setFixedSize(100, 30)
+        rename_file_layout.addWidget(self.rename_file_table)
 
     def set_export_layout(self):
-        export_layout = QHBoxLayout()
-        self.main_layout.addLayout(export_layout)
+        self.export_layout = QHBoxLayout()
+        self.export_layout.setContentsMargins(0, 0, 0, 0)
+        self.export_layout.setSpacing(0)
+        self.main_layout.addLayout(self.export_layout)
 
         export_file_btn = PushButton(text='导出文件')
         export_file_btn.setStyleSheet(EXPORT_BUTTON_STYLE)
         export_file_btn.setFixedSize(100, 30)
-        export_layout.addWidget(export_file_btn)
+        self.export_layout.addWidget(export_file_btn)
 
     def emit_import_file_signal(self):
         self.import_file_signal.emit()

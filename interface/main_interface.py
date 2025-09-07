@@ -3,7 +3,7 @@ import sys
 
 from PyQt6.QtGui import QDoubleValidator, QIcon
 from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout
+from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QFileDialog, QLabel
 from qfluentwidgets import InfoBarPosition, InfoBarIcon, PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox
 
 # 引入文件夹路径
@@ -26,4 +26,28 @@ class MainInterface(QMainWindow):
         self.main_layout.import_file_signal.connect(self.import_file)
 
     def import_file(self):
-        print('[main_interface] import file')
+        # 打开系统文件资源管理器
+        file_path, _ = QFileDialog.getOpenFileNames(
+            self,
+            "选择文件",
+            "",
+            "所有文件 (*.*);;文本文件 (*.txt);;图像文件 (*.png *.jpg)"
+        )
+        if file_path:
+            self.main_layout.import_file_table.setRowCount(0)
+            self.main_layout.import_file_table.setRowCount(len(file_path))
+            for row, file_name in enumerate(file_path):
+                self.set_table_row(row, file_name.split('/')[-1])
+    
+    def set_table_row(self, row, file_name):
+        """填充单元格"""
+        table_header_labels_zh = ['文件名']
+
+        self.main_layout.import_file_table.setHorizontalHeaderLabels(table_header_labels_zh)
+        self.main_layout.import_file_table.setColumnCount(len(table_header_labels_zh))
+        
+        self.main_layout.import_file_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents) # 根据内容自动调整列宽
+        self.main_layout.import_file_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 第二列自动拉伸
+        
+        item = QTableWidgetItem(str(file_name))
+        self.main_layout.import_file_table.setItem(row, 0, item)   # 把 Item 填充进单元格
