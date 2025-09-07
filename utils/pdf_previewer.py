@@ -21,9 +21,15 @@ class PdfPreviewWindow(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setStyleSheet("""
             QWidget {
-                background-color: rgba(255, 255, 255, 240);
-                border: 2px solid #ccc;
-                border-radius: 8px;
+                background-color: rgba(255, 255, 255, 250);
+                border: 2px solid #666;
+                border-radius: 10px;
+            }
+            QLabel {
+                background-color: white;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 2px;
             }
         """)
         
@@ -33,6 +39,9 @@ class PdfPreviewWindow(QWidget):
         
         self.image_label = QLabel()
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # 设置标签属性以优化图像显示
+        self.image_label.setScaledContents(False)  # 不自动缩放内容
+        self.image_label.setMinimumSize(100, 100)
         layout.addWidget(self.image_label)
         
         # 安装事件过滤器以监听鼠标点击
@@ -60,9 +69,16 @@ class PdfPreviewWindow(QWidget):
             # 获取第一页
             page = doc[0]
             
-            # 设置缩放矩阵
-            matrix = fitz.Matrix(1.2, 1.2)
-            pix = page.get_pixmap(matrix=matrix)
+            # 设置更高的缩放矩阵以提高清晰度
+            # 2.5 表示2.5倍放大，可以显著提高清晰度
+            matrix = fitz.Matrix(2.5, 2.5)
+            # 使用高质量渲染参数
+            pix = page.get_pixmap(
+                matrix=matrix, 
+                alpha=False,  # 不需要透明通道，提高性能
+                annots=True,  # 包含注释
+                clip=None     # 不裁剪
+            )
             
             # 转换为QImage
             img = QImage(
@@ -76,10 +92,11 @@ class PdfPreviewWindow(QWidget):
             # 转换为QPixmap
             pixmap = QPixmap.fromImage(img)
             
-            # 限制预览图片的最大尺寸
-            max_width = 400
-            max_height = 500
+            # 限制预览图片的最大尺寸，增加最大尺寸以显示更多细节
+            max_width = 600
+            max_height = 700
             if pixmap.width() > max_width or pixmap.height() > max_height:
+                # 使用高质量的平滑变换算法
                 pixmap = pixmap.scaled(
                     max_width, 
                     max_height, 
@@ -87,11 +104,21 @@ class PdfPreviewWindow(QWidget):
                     Qt.TransformationMode.SmoothTransformation
                 )
             
+            # 为高DPI显示器优化
+            device_pixel_ratio = QApplication.primaryScreen().devicePixelRatio()
+            if device_pixel_ratio > 1.0:
+                pixmap.setDevicePixelRatio(device_pixel_ratio)
+            
             # 显示图片
             self.image_label.setPixmap(pixmap)
             
-            # 调整窗口大小和位置
-            self.resize(pixmap.size())
+            # 调整窗口大小和位置，考虑设备像素比
+            if device_pixel_ratio > 1.0:
+                actual_width = int(pixmap.width() / device_pixel_ratio)
+                actual_height = int(pixmap.height() / device_pixel_ratio)
+                self.resize(actual_width, actual_height)
+            else:
+                self.resize(pixmap.size())
             
             # 计算窗口位置，确保不超出屏幕边界
             screen = QApplication.primaryScreen().geometry()
