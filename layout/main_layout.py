@@ -14,6 +14,7 @@ sys.path.append(utils_folder_path)
 
 from config.cfg import CLASS_LIST
 from utils.custom_style import EXPORT_BUTTON_STYLE
+from utils.pdf_previewer import PdfPreviewerTableWidget
 
 class MainLayout(QWidget):
 
@@ -65,7 +66,7 @@ class MainLayout(QWidget):
         import_file_ctrl_layout.addWidget(extract_name_btn)
         extract_name_btn.clicked.connect(self.emit_extract_name_signal)
 
-        self.import_file_table = TableWidget()
+        self.import_file_table = PdfPreviewerTableWidget()
         origin_file_layout.addWidget(self.import_file_table)
 
     def set_rename_file_layout(self):

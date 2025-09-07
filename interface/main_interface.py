@@ -48,6 +48,8 @@ class MainInterface(QMainWindow):
         if self.import_file_path_list:
             self.main_layout.import_file_table.setRowCount(0)
             self.main_layout.import_file_table.setRowCount(len(self.import_file_path_list))
+            # 设置文件路径列表以启用PDF预览功能
+            self.main_layout.import_file_table.set_file_paths(self.import_file_path_list)
             for row, file_name in enumerate(self.import_file_path_list):
                 self.set_table_row(self.main_layout.import_file_table, row, 'class', file_name.split('/')[-1])
     
@@ -55,15 +57,17 @@ class MainInterface(QMainWindow):
         """填充单元格"""
 
         if table == self.main_layout.import_file_table:
-            table_header_labels_zh = ['类别', '文件名']
+            table_header_labels_zh = ['类别', '文件名', '预览']
             table.setHorizontalHeaderLabels(table_header_labels_zh)
             table.setColumnCount(len(table_header_labels_zh))
 
-            table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)  # 自动拉伸
-            table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)  # 根据内容自动调整列宽
+            table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # 固定宽度
+            table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 自动拉伸
+            table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)  # 固定宽度
 
-            # 固定第一列的宽度
-            table.setColumnWidth(0, 100)
+            # 设置列宽
+            table.setColumnWidth(0, 100)  # 类别列
+            table.setColumnWidth(2, 80)   # 预览按钮列
 
             class_comboBox = ComboBox()
             class_comboBox.addItems(CLASS_LIST)
@@ -71,6 +75,9 @@ class MainInterface(QMainWindow):
         
             item = QTableWidgetItem(str(value2))
             table.setItem(row, 1, item)   # 把 Item 填充进单元格
+            
+            # 添加预览按钮
+            table.add_preview_button(row)
 
         elif table == self.main_layout.rename_file_table:
             table_header_labels_zh = ['文件名']
