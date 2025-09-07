@@ -84,3 +84,24 @@ QPushButton:pressed {
     background-color: rgba(0, 122, 204, 0.2);
 }
 """
+
+# 删除按钮样式 - 与预览按钮相同，但使用红色
+DELETE_BUTTON_STYLE = """
+QPushButton {
+    border: none;
+    background-color: transparent;
+    color: #dc3545;
+    text-decoration: underline;
+    font-size: 14px;
+    padding: 5px;
+}
+QPushButton:hover {
+    color: #c82333;
+    background-color: rgba(220, 53, 69, 0.1);
+    border-radius: 3px;
+}
+QPushButton:pressed {
+    color: #a71e2a;
+    background-color: rgba(220, 53, 69, 0.2);
+}
+"""

@@ -50,6 +50,8 @@ class MainInterface(QMainWindow):
             self.main_layout.import_file_table.setRowCount(len(self.import_file_path_list))
             # 设置文件路径列表以启用PDF预览功能
             self.main_layout.import_file_table.set_file_paths(self.import_file_path_list)
+            # 设置删除回调函数
+            self.main_layout.import_file_table.set_delete_callback(self.delete_file_row)
             for row, file_name in enumerate(self.import_file_path_list):
                 self.set_table_row(self.main_layout.import_file_table, row, 'class', file_name.split('/')[-1])
     
@@ -57,17 +59,19 @@ class MainInterface(QMainWindow):
         """填充单元格"""
 
         if table == self.main_layout.import_file_table:
-            table_header_labels_zh = ['类别', '文件名', '预览']
+            table_header_labels_zh = ['类别', '文件名', '预览', '删除']
             table.setHorizontalHeaderLabels(table_header_labels_zh)
             table.setColumnCount(len(table_header_labels_zh))
 
             table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # 固定宽度
             table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # 自动拉伸
             table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)  # 固定宽度
+            table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)  # 固定宽度
 
             # 设置列宽
             table.setColumnWidth(0, 100)  # 类别列
             table.setColumnWidth(2, 80)   # 预览按钮列
+            table.setColumnWidth(3, 80)   # 删除按钮列
             
             font = QFont()
             font.setPointSize(10)      # 也可以用 .setPixelSize(18)
@@ -81,6 +85,9 @@ class MainInterface(QMainWindow):
             
             # 添加预览按钮
             table.add_preview_button(row)
+            
+            # 添加删除按钮
+            table.add_delete_button(row)
 
         elif table == self.main_layout.rename_file_table:
             table_header_labels_zh = ['文件名']
@@ -135,3 +142,22 @@ class MainInterface(QMainWindow):
         else:
             self.output_file_path_list = self.import_file_path_list
             batch_rename(self.output_file_path_list, output_file_name_list)
+            
+    def delete_file_row(self, row):
+        """删除指定行的文件"""
+        if 0 <= row < len(self.import_file_path_list):
+            # 从文件路径列表中删除
+            del self.import_file_path_list[row]
+            del self.import_file_name_list[row]
+            
+            # 更新表格显示
+            self.main_layout.import_file_table.setRowCount(0)
+            if self.import_file_path_list:
+                self.main_layout.import_file_table.setRowCount(len(self.import_file_path_list))
+                # 重新设置文件路径列表
+                self.main_layout.import_file_table.set_file_paths(self.import_file_path_list)
+                self.main_layout.import_file_table.set_delete_callback(self.delete_file_row)
+                
+                # 重新填充表格
+                for i, file_name in enumerate(self.import_file_path_list):
+                    self.set_table_row(self.main_layout.import_file_table, i, 'class', file_name.split('/')[-1])

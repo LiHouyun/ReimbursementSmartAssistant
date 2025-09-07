@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QTableWidget, QToolTip, QWidget, QLabel, QVBoxLayout
 from PyQt6.QtGui import QPixmap, QImage, QCursor
 from PyQt6.QtCore import Qt, QPoint, QEvent
 from qfluentwidgets import TableWidget, PushButton
-from utils.custom_style import PREVIEW_BUTTON_STYLE
+from utils.custom_style import PREVIEW_BUTTON_STYLE, DELETE_BUTTON_STYLE
 
 # 尝试导入PyMuPDF，如果失败则禁用预览功能
 try:
@@ -161,10 +161,15 @@ class PdfPreviewerTableWidget(TableWidget):
         super().__init__(*args, **kwargs)
         self.file_path_list = []  # 存储文件路径列表
         self.preview_window = PdfPreviewWindow()  # 预览窗口
+        self.delete_callback = None  # 删除回调函数
         
     def set_file_paths(self, file_paths):
         """设置文件路径列表"""
         self.file_path_list = file_paths
+        
+    def set_delete_callback(self, callback):
+        """设置删除回调函数"""
+        self.delete_callback = callback
         
     def add_preview_button(self, row):
         """在指定行添加预览按钮"""
@@ -173,6 +178,14 @@ class PdfPreviewerTableWidget(TableWidget):
         preview_btn.setStyleSheet(PREVIEW_BUTTON_STYLE)  # 应用自定义样式
         preview_btn.clicked.connect(lambda: self._on_preview_clicked(row, preview_btn))
         self.setCellWidget(row, 2, preview_btn)  # 添加到第三列（索引2）
+        
+    def add_delete_button(self, row):
+        """在指定行添加删除按钮"""
+        delete_btn = PushButton("删除")
+        delete_btn.setFixedSize(60, 25)
+        delete_btn.setStyleSheet(DELETE_BUTTON_STYLE)  # 应用自定义样式
+        delete_btn.clicked.connect(lambda: self._on_delete_clicked(row))
+        self.setCellWidget(row, 3, delete_btn)  # 添加到第四列（索引3）
         
     def _on_preview_clicked(self, row, button):
         """预览按钮点击事件"""
@@ -192,4 +205,9 @@ class PdfPreviewerTableWidget(TableWidget):
                 self.preview_window.show_pdf_preview(pdf_path, button_global_pos)
                 
         except Exception as e:
-            QToolTip.showText(button.mapToGlobal(QPoint(0, 0)), f"无法预览: {e}", self) 
+            QToolTip.showText(button.mapToGlobal(QPoint(0, 0)), f"无法预览: {e}", self)
+            
+    def _on_delete_clicked(self, row):
+        """删除按钮点击事件"""
+        if self.delete_callback:
+            self.delete_callback(row) 

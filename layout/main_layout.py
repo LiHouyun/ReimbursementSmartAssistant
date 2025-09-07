@@ -3,7 +3,7 @@ import sys
 
 from PyQt6.QtCore import pyqtSignal, QRegularExpression, Qt
 from PyQt6.QtGui import QDoubleValidator, QIcon, QRegularExpressionValidator
-from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout, QButtonGroup
+from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout, QButtonGroup, QTableWidget
 from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, RadioButton
 
 # 引入文件夹路径
@@ -67,6 +67,8 @@ class MainLayout(QWidget):
         extract_name_btn.clicked.connect(self.emit_extract_name_signal)
 
         self.import_file_table = PdfPreviewerTableWidget()
+        # 禁用 第二列的编辑功能
+        self.import_file_table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         origin_file_layout.addWidget(self.import_file_table)
 
     def set_rename_file_layout(self):
