@@ -30,6 +30,7 @@ class MainInterface(QMainWindow):
         self.import_file_name_list = [] # 导入的文件名 list
         self.output_folder_path = '' # 输出文件夹路径
         self.output_file_path_list = [] # 输出文件路径 list
+        self.output_file_name_list = [] # 输出文件名 list
 
         self.main_layout.import_file_signal.connect(self.import_file)
         self.main_layout.extract_name_signal.connect(self.extract_name)
@@ -102,22 +103,22 @@ class MainInterface(QMainWindow):
 
     def extract_name(self):
         print('[main_interface] extract name')
-        new_name_list = []
+        self.output_file_name_list = []
         for i, file_path in enumerate(self.import_file_path_list):
             print(file_path)
             try:
                 info_all = extract_invoice_info(file_path)
                 class_comboBox = self.main_layout.import_file_table.cellWidget(i, 0)
                 class_text = class_comboBox.currentText()
-                new_name_list.append(class_text + ' ' + info_all['价税合计']['小写'] + ' ' + info_all['开票日期'].replace('-', '')[4:8] + '.pdf')
+                self.output_file_name_list.append(class_text + ' ' + info_all['价税合计']['小写'] + ' ' + info_all['开票日期'].replace('-', '')[4:8] + '.pdf')
             except Exception as e:
                 print(f'[main_interface] extract name error: {e}')
-                new_name_list.append(file_path.split('/')[-1].split('.')[0] + '-提取失败' + '.pdf')
+                self.output_file_name_list.append(file_path.split('/')[-1].split('.')[0] + '-提取失败' + '.pdf')
 
         self.main_layout.rename_file_table.setRowCount(0)
-        self.main_layout.rename_file_table.setRowCount(len(new_name_list))
-        for row, new_name in enumerate(new_name_list):
-            self.set_table_row(self.main_layout.rename_file_table, row, new_name, value2=None)
+        self.main_layout.rename_file_table.setRowCount(len(self.output_file_name_list))
+        for row, new_name in enumerate(self.output_file_name_list):
+            self.set_table_row(self.main_layout.rename_file_table, row, self.output_file_name_list[row], value2=None)
 
     def rename(self, is_save_as):
         print(f'[main_interface] rename: {is_save_as}')
@@ -125,10 +126,10 @@ class MainInterface(QMainWindow):
         if not self.import_file_path_list:
             return
 
-        output_file_name_list = []
-        # 从  self.rename_file_table 第一列获取文件名
+        # 清空从 self.rename_file_table 第一列重新获取文件名
+        self.output_file_name_list = []
         for i in range(self.main_layout.rename_file_table.rowCount()):
-            output_file_name_list.append(self.main_layout.rename_file_table.item(i, 0).text())
+            self.output_file_name_list.append(self.main_layout.rename_file_table.item(i, 0).text())
 
         if is_save_as:
             self.output_folder_path = self.import_file_path_list[0].rsplit('/', 1)[0] + '/' + OUTPUT_FOLDER
@@ -137,11 +138,13 @@ class MainInterface(QMainWindow):
 
             self.output_file_path_list = [self.output_folder_path + '/' + file_name for file_name in self.import_file_name_list]
 
-            batch_rename(self.output_file_path_list, output_file_name_list)
+            batch_rename(self.output_file_path_list, self.output_file_name_list)
 
         else:
             self.output_file_path_list = self.import_file_path_list
-            batch_rename(self.output_file_path_list, output_file_name_list)
+            print(f'self.output_file_name_list, {self.output_file_name_list}')
+            print(f'self.output_file_path_list, {self.output_file_path_list}')
+            batch_rename(self.output_file_path_list, self.output_file_name_list)
             
     def delete_file_row(self, row):
         """删除指定行的文件"""
@@ -149,6 +152,12 @@ class MainInterface(QMainWindow):
             # 从文件路径列表中删除
             del self.import_file_path_list[row]
             del self.import_file_name_list[row]
+            if self.output_file_name_list:
+                del self.output_file_name_list[row]
+                self.main_layout.rename_file_table.setRowCount(0)
+                self.main_layout.rename_file_table.setRowCount(len(self.output_file_name_list))
+                for row, new_name in enumerate(self.output_file_name_list):
+                    self.set_table_row(self.main_layout.rename_file_table, row, self.output_file_name_list[row], value2=None)
             
             # 更新表格显示
             self.main_layout.import_file_table.setRowCount(0)
