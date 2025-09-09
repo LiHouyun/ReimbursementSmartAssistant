@@ -81,7 +81,7 @@ def extract_invoice_number(text: str) -> Optional[str]:
         match = re.search(pattern, text)
         if match:
             return match.group(1)
-    return None
+    return '#'
 
 def extract_invoice_date(text: str) -> Optional[str]:
     """提取开票日期"""
@@ -168,7 +168,7 @@ def extract_service_type(text: str) -> Optional[str]:
         match = re.search(pattern, text)
         if match:
             return match.group(0)
-    return None
+    return '#'
 
 def extract_item_details(text: str) -> List[Dict[str, str]]:
     """提取项目明细"""
@@ -307,7 +307,7 @@ def extract_drawer(text: str) -> Optional[str]:
         match = re.search(pattern, text)
         if match:
             return match.group(1).strip()
-    return None
+    return '#'
 
 def extract_remarks(text: str) -> Optional[str]:
     """提取备注信息"""
@@ -317,7 +317,7 @@ def extract_remarks(text: str) -> Optional[str]:
             remark_line = lines[i + 1].strip()
             if remark_line and remark_line != "didi":
                 return remark_line
-    return None
+    return '#'
 
 # 使用示例
 if __name__ == "__main__":
