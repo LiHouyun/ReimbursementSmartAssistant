@@ -2,6 +2,8 @@ import os
 from PySide6.QtWidgets import QToolTip, QWidget, QLabel, QVBoxLayout, QApplication, QTableWidget, QPushButton
 from PySide6.QtGui import QPixmap, QImage
 from PySide6.QtCore import Qt, QPoint, QEvent
+from qfluentwidgets import TableWidget, PushButton
+
 from utils.custom_style import PREVIEW_BUTTON_STYLE, DELETE_BUTTON_STYLE
 
 # 尝试导入PyMuPDF，如果失败则禁用预览功能
@@ -153,7 +155,7 @@ class PdfPreviewWindow(QWidget):
                 self.hide()
         return super().eventFilter(obj, event)
 
-class PdfPreviewerTableWidget(QTableWidget):
+class PdfPreviewerTableWidget(TableWidget):
     """带PDF预览功能的表格组件"""
     
     def __init__(self, *args, **kwargs):
@@ -172,7 +174,7 @@ class PdfPreviewerTableWidget(QTableWidget):
         
     def add_preview_button(self, row):
         """在指定行添加预览按钮"""
-        preview_btn = QPushButton("预览")
+        preview_btn = PushButton("预览")
         preview_btn.setFixedSize(60, 25)
         preview_btn.setStyleSheet(PREVIEW_BUTTON_STYLE)  # 应用自定义样式
         preview_btn.clicked.connect(lambda: self._on_preview_clicked(row, preview_btn))
@@ -180,7 +182,7 @@ class PdfPreviewerTableWidget(QTableWidget):
         
     def add_delete_button(self, row):
         """在指定行添加删除按钮"""
-        delete_btn = QPushButton("删除")
+        delete_btn = PushButton("删除")
         delete_btn.setFixedSize(60, 25)
         delete_btn.setStyleSheet(DELETE_BUTTON_STYLE)  # 应用自定义样式
         delete_btn.clicked.connect(lambda: self._on_delete_clicked(row))
