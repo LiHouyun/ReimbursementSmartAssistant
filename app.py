@@ -1,8 +1,6 @@
 import os
 import sys
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem
-from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar
-from PyQt6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
 
 # 引入文件夹路径
 relative_path = '..\\'

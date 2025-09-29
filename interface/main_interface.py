@@ -1,10 +1,9 @@
 import os
 import sys
 
-from PyQt6.QtGui import QDoubleValidator, QIcon, QFont
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QFileDialog, QLabel
-from qfluentwidgets import InfoBarPosition, InfoBarIcon, PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, Dialog
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QFileDialog, QComboBox, QDialog
 
 # 引入文件夹路径
 relative_path = '..\\'
@@ -77,7 +76,7 @@ class MainInterface(QMainWindow):
             
             font = QFont()
             font.setPointSize(10)      # 也可以用 .setPixelSize(18)
-            class_comboBox = ComboBox()
+            class_comboBox = QComboBox()
             class_comboBox.addItems(CLASS_LIST)
             class_comboBox.setFont(font)
             table.setCellWidget(row, 0, class_comboBox)
@@ -145,15 +144,17 @@ class MainInterface(QMainWindow):
 
             rename_result_json = batch_rename(self.output_file_path_list, self.output_file_name_list)
             rename_result = format_rename_message(rename_result_json)
-            InfoBar.info(
-                title='提示',
-                content=rename_result,
-                orient=Qt.Orientation.Vertical,  # 内容太长时可使用垂直布局
-                isClosable=True,
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=-1,
-                parent=self.main_layout,
-            )
+            # InfoBar.info(
+            #     title='提示',
+            #     content=rename_result,
+            #     orient=Qt.Orientation.Vertical,  # 内容太长时可使用垂直布局
+            #     isClosable=True,
+            #     position=InfoBarPosition.TOP_RIGHT,
+            #     duration=-1,
+            #     parent=self.main_layout,
+            # )
+
+            print(f'InfoBar - 提示 {rename_result}')
 
         else:
             self.output_file_path_list = self.import_file_path_list
@@ -162,15 +163,17 @@ class MainInterface(QMainWindow):
             rename_result_json = batch_rename(self.output_file_path_list, self.output_file_name_list)
             rename_result = format_rename_message(rename_result_json)
 
-            InfoBar.info(
-                title='提示',
-                content=rename_result,
-                orient=Qt.Orientation.Vertical,  # 内容太长时可使用垂直布局
-                isClosable=True,
-                position=InfoBarPosition.TOP_RIGHT,
-                duration=-1,
-                parent=self.main_layout,
-            )
+            # InfoBar.info(
+            #     title='提示',
+            #     content=rename_result,
+            #     orient=Qt.Orientation.Vertical,  # 内容太长时可使用垂直布局
+            #     isClosable=True,
+            #     position=InfoBarPosition.TOP_RIGHT,
+            #     duration=-1,
+            #     parent=self.main_layout,
+            # )
+            print(f'InfoBar - 提示 {rename_result}')
+
 
     def check_info(self):
         # 是否含相同的发票号码
@@ -196,7 +199,7 @@ class MainInterface(QMainWindow):
                 for i in value:
                     dialog_info += f'{self.import_file_name_list[i]}\n'
             dialog_info += '\n'
-            repeated_dialog = Dialog("有相同发票", dialog_info, self.main_layout)
+            repeated_dialog = QDialog("有相同发票", dialog_info, self.main_layout)
             repeated_dialog.yesButton.setText("OK")
             repeated_dialog.cancelButton.setText("取消")
 

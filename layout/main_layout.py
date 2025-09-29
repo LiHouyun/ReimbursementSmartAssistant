@@ -1,10 +1,9 @@
 import os
 import sys
 
-from PyQt6.QtCore import pyqtSignal, QRegularExpression, Qt
-from PyQt6.QtGui import QDoubleValidator, QIcon, QRegularExpressionValidator
-from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout, QButtonGroup, QTableWidget
-from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, RadioButton
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import (QVBoxLayout, QWidget, QHBoxLayout, QButtonGroup, 
+                               QTableWidget, QPushButton, QRadioButton)
 
 # 引入文件夹路径
 relative_path = '..\\'
@@ -18,9 +17,9 @@ from utils.pdf_previewer import PdfPreviewerTableWidget
 
 class MainLayout(QWidget):
 
-    import_file_signal = pyqtSignal()
-    extract_name_signal = pyqtSignal()
-    rename_signal = pyqtSignal(bool)
+    import_file_signal = Signal()
+    extract_name_signal = Signal()
+    rename_signal = Signal(bool)
 
     def __init__(self):
         super().__init__()
@@ -56,12 +55,12 @@ class MainLayout(QWidget):
         import_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         origin_file_layout.addLayout(import_file_ctrl_layout)
 
-        import_file_btn = PushButton(text='导入文件')
+        import_file_btn = QPushButton(text='导入文件')
         import_file_btn.setFixedSize(100, 30)
         import_file_ctrl_layout.addWidget(import_file_btn)
         import_file_btn.clicked.connect(self.emit_import_file_signal)
         
-        extract_name_btn = PushButton(text='提取文件名')
+        extract_name_btn = QPushButton(text='提取文件名')
         extract_name_btn.setFixedSize(100, 30)
         import_file_ctrl_layout.addWidget(extract_name_btn)
         extract_name_btn.clicked.connect(self.emit_extract_name_signal)
@@ -85,13 +84,13 @@ class MainLayout(QWidget):
         rename_file_ctrl_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         rename_file_layout.addLayout(rename_file_ctrl_layout)
 
-        rename_btn = PushButton(text='重命名')
+        rename_btn = QPushButton(text='重命名')
         rename_btn.setFixedSize(100, 30)
         rename_file_ctrl_layout.addWidget(rename_btn)
         rename_btn.clicked.connect(self.emit_rename_signal)
 
-        rename_rd_btn1 = RadioButton('直接重命名')
-        rename_rd_btn2 = RadioButton('另存后重命名')
+        rename_rd_btn1 = QRadioButton('直接重命名')
+        rename_rd_btn2 = QRadioButton('另存后重命名')
         # 将单选按钮添加到互斥的按钮组
         self.button_group = QButtonGroup()
         self.button_group.addButton(rename_rd_btn1)
@@ -102,7 +101,7 @@ class MainLayout(QWidget):
         rename_rd_btn_layout.addWidget(rename_rd_btn2)
         rename_file_ctrl_layout.addLayout(rename_rd_btn_layout)
 
-        self.rename_file_table = TableWidget()
+        self.rename_file_table = QTableWidget()
         rename_file_layout.addWidget(self.rename_file_table)
 
     def set_export_layout(self):
@@ -111,7 +110,7 @@ class MainLayout(QWidget):
         self.export_layout.setSpacing(0)
         self.main_layout.addLayout(self.export_layout)
 
-        export_file_btn = PushButton(text='导出文件')
+        export_file_btn = QPushButton(text='导出文件')
         export_file_btn.setStyleSheet(EXPORT_BUTTON_STYLE)
         export_file_btn.setFixedSize(100, 30)
         self.export_layout.addWidget(export_file_btn)
