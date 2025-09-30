@@ -1,9 +1,9 @@
 import os
 import sys
 
-from PyQt6.QtCore import pyqtSignal, QRegularExpression, Qt
-from PyQt6.QtGui import QDoubleValidator, QIcon, QRegularExpressionValidator
-from PyQt6.QtWidgets import QLineEdit, QVBoxLayout,  QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QLabel, QSpacerItem, QSizePolicy, QHBoxLayout, QButtonGroup, QTableWidget
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import (QVBoxLayout, QWidget, QHBoxLayout, QButtonGroup, 
+                               QTableWidget, QPushButton, QRadioButton)
 from qfluentwidgets import PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, RadioButton
 
 # 引入文件夹路径
@@ -18,9 +18,9 @@ from utils.pdf_previewer import PdfPreviewerTableWidget
 
 class MainLayout(QWidget):
 
-    import_file_signal = pyqtSignal()
-    extract_name_signal = pyqtSignal()
-    rename_signal = pyqtSignal(bool)
+    import_file_signal = Signal()
+    extract_name_signal = Signal()
+    rename_signal = Signal(bool)
 
     def __init__(self):
         super().__init__()
@@ -112,7 +112,7 @@ class MainLayout(QWidget):
         self.main_layout.addLayout(self.export_layout)
 
         export_file_btn = PushButton(text='导出文件')
-        export_file_btn.setStyleSheet(EXPORT_BUTTON_STYLE)
+        # export_file_btn.setStyleSheet(EXPORT_BUTTON_STYLE)
         export_file_btn.setFixedSize(100, 30)
         self.export_layout.addWidget(export_file_btn)
 

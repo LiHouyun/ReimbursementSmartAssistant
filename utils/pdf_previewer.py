@@ -1,8 +1,9 @@
 import os
-from PyQt6.QtWidgets import QTableWidget, QToolTip, QWidget, QLabel, QVBoxLayout, QApplication
-from PyQt6.QtGui import QPixmap, QImage, QCursor
-from PyQt6.QtCore import Qt, QPoint, QEvent
+from PySide6.QtWidgets import QToolTip, QWidget, QLabel, QVBoxLayout, QApplication, QTableWidget, QPushButton
+from PySide6.QtGui import QPixmap, QImage
+from PySide6.QtCore import Qt, QPoint, QEvent
 from qfluentwidgets import TableWidget, PushButton
+
 from utils.custom_style import PREVIEW_BUTTON_STYLE, DELETE_BUTTON_STYLE
 
 # 尝试导入PyMuPDF，如果失败则禁用预览功能

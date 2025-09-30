@@ -1,9 +1,9 @@
 import os
 import sys
 
-from PyQt6.QtGui import QDoubleValidator, QIcon, QFont
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QHBoxLayout, QApplication, QWidget, QHeaderView, QCheckBox, QTableWidgetItem, QGridLayout, QFileDialog, QLabel
+from PySide6.QtGui import QIcon, QFont
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QHeaderView, QTableWidgetItem, QFileDialog, QComboBox, QDialog
 from qfluentwidgets import InfoBarPosition, InfoBarIcon, PushButton, SearchLineEdit, CardWidget, TableWidget, setCustomStyleSheet, InfoBar, LineEdit, StrongBodyLabel, ComboBox, Dialog
 
 # 引入文件夹路径
@@ -155,6 +155,8 @@ class MainInterface(QMainWindow):
                 parent=self.main_layout,
             )
 
+            print(f'InfoBar - 提示 {rename_result}')
+
         else:
             self.output_file_path_list = self.import_file_path_list
             print(f'self.output_file_name_list, {self.output_file_name_list}')
@@ -171,6 +173,8 @@ class MainInterface(QMainWindow):
                 duration=-1,
                 parent=self.main_layout,
             )
+            print(f'InfoBar - 提示 {rename_result}')
+
 
     def check_info(self):
         # 是否含相同的发票号码
